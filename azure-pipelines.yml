@@ -16,17 +16,17 @@ parameters:
       - stage
       - prod
 
-
 variables:
   imageName_vote: vote
   imageName_result: result
   imageName_worker: worker
   tags: 'latest'
-  replicaNo: 2
-  aks_serviceconnection: ''
-  namespaces: ''
+  replicaNo: 1
+  aks_serviceconnection: 'example_aks'
+  namespace: 'vote'
   repo_url: 'akacrdemo.azurecr.io'
   secretName: 'acrsecret'
+  secretNameDb: 'dbsecret'
 
 stages:
   - stage: Build
@@ -69,6 +69,103 @@ stages:
         
         - task: PublishPipelineArtifact@1
           inputs:
-            targetPath: '$(Pipeline.Workspace)/s/k8s-specifications'
+            targetPath: '$(Pipeline.Workspace)/s/aks-specifications'
             artifact: 'manifests'
             publishLocation: 'pipeline'
+
+
+  - stage: Deploy
+    displayName: Deploy App
+    jobs:
+    - job: deploy
+      displayName:  deploy-${{parameters.environment}}
+      pool:
+       name: 'default'
+      steps:
+           - task: DownloadPipelineArtifact@2
+             inputs:
+               buildType: 'current'
+               artifactName: 'manifests'
+               targetPath: '$(Pipeline.Workspace)/manifests'
+
+           - task: KubernetesManifest@0
+             displayName: 'Create Secrets ACR'
+             inputs:
+               action: 'createSecret'
+               kubernetesServiceConnection: '$(aks_serviceconnection)'
+               namespace: '$(namespaces)'
+               secretType: 'dockerRegistry'
+               secretName: '$(secretName)'
+               dockerRegistryEndpoint: 'acr'
+
+           - task: replacetokens@5
+             inputs:
+               rootDirectory: '$(Pipeline.Workspace)/manifests'
+               targetFiles: '**/*.yml'
+               encoding: 'auto'
+               tokenPattern: 'custom'
+               tokenPrefix: '#{'
+               tokenSuffix: '}#'
+               writeBOM: true
+               actionOnMissing: 'warn'
+               keepToken: false
+               actionOnNoFiles: 'continue'
+               enableTransforms: false
+               useLegacyPattern: false
+               enableTelemetry: true
+
+           - task: KubernetesManifest@0
+             displayName: 'Deploy vote App Kubernetes'
+             inputs:
+               action: 'deploy'
+               kubernetesServiceConnection: '$(aks_serviceconnection)'
+               namespace: '$(namespaces)'
+               manifests: |
+                 $(Pipeline.Workspace)/manifests/vote-deployment.yaml
+                 $(Pipeline.Workspace)/manifests/vote-service.yaml
+               containers: '$(repo_url)/$(imageName_vote):$(tags)'
+               imagePullSecrets: '$(secretName)'
+
+           - task: KubernetesManifest@0
+             displayName: 'Deploy Redis Kubernetes'
+             inputs:
+               action: 'deploy'
+               kubernetesServiceConnection: '$(aks_serviceconnection)'
+               namespace: '$(namespaces)'
+               manifests: |
+                 $(Pipeline.Workspace)/manifests/redis-deployment.yaml
+                 $(Pipeline.Workspace)/manifests/redis-service.yaml
+
+           - task: KubernetesManifest@0
+             displayName: 'Deploy DB Kubernetes'
+             inputs:
+               action: 'deploy'
+               kubernetesServiceConnection: '$(aks_serviceconnection)'
+               namespace: '$(namespaces)'
+               manifests: |
+                 $(Pipeline.Workspace)/manifests/db-deployment.yaml
+                 $(Pipeline.Workspace)/manifests/db-service.yaml
+
+           - task: KubernetesManifest@0
+             displayName: 'Deploy worker Kubernetes'
+             inputs:
+               action: 'deploy'
+               kubernetesServiceConnection: '$(aks_serviceconnection)'
+               namespace: '$(namespaces)'
+               manifests: |
+                 $(Pipeline.Workspace)/manifests/worker-deployment.yaml
+                 $(Pipeline.Workspace)/manifests/worker-service.yml
+               containers: '$(repo_url)/$(imageName_worker):$(tags)'
+               imagePullSecrets: '$(secretName)'
+
+           - task: KubernetesManifest@0
+             displayName: 'Deploy result app Kubernetes'
+             inputs:
+               action: 'deploy'
+               kubernetesServiceConnection: '$(aks_serviceconnection)'
+               namespace: '$(namespaces)'
+               manifests: |
+                 $(Pipeline.Workspace)/manifests/result-deployment.yaml
+                 $(Pipeline.Workspace)/manifests/result-service.yaml
+               containers: '$(repo_url)/$(imageName_result):$(tags)'
+               imagePullSecrets: '$(secretName)'
