@@ -98,6 +98,16 @@ stages:
                secretName: '$(secretName)'
                dockerRegistryEndpoint: 'acr'
 
+           - task: KubernetesManifest@0
+             displayName: 'create secret DB'
+             inputs:
+               action: 'createSecret'
+               kubernetesServiceConnection: '$(aks_serviceconnection)'
+               namespace: '$(namespaces)'
+               secretType: 'generic'
+               secretName: '$(secretNameDb)'
+               secretArguments: '--from-literal=username=postgres --from-literal=password="$(password)"'
+
            - task: replacetokens@5
              inputs:
                rootDirectory: '$(Pipeline.Workspace)/manifests'
