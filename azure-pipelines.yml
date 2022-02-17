@@ -5,6 +5,7 @@
 trigger:
 - none
 
+# defined parameters to select environments
 parameters:
   - name: environment
     displayName: Environment
@@ -16,6 +17,7 @@ parameters:
       - stage
       - prod
 
+# Defined variables aks_serviceconnection, acr_serviceconnection, repo_url are must to update for new configuration
 variables:
   imageName_vote: vote
   imageName_result: result
@@ -25,9 +27,10 @@ variables:
   acr_serviceconnection: 'acr'
   namespaces: 'vote'
   repo_url: '$(acr_repo_url)'
-  secretName: 'acrsecret'
-  secretNameDb: 'dbsecret'
+  secretName: 'acrsecret'       
+  secretNameDb: 'dbsecret' 
 
+# Stage to build/compile the code
 stages:
   - stage: Build
     displayName: Build App
@@ -37,6 +40,8 @@ stages:
         pool:
           vmImage: 'ubuntu-latest'
         steps:
+
+        # Building the vote docker image and pushing it to ACR  
         - task: Docker@2
           displayName: 'building vote image'
           inputs:
@@ -47,6 +52,7 @@ stages:
             tags: |
               $(tags)
 
+       # Building the result docker image and pushing it to ACR  
         - task: Docker@2
           displayName: 'building result image'
           inputs:
@@ -57,6 +63,7 @@ stages:
             tags: |
               $(tags)
 
+        # Building the worker docker image and pushing it to ACR 
         - task: Docker@2
           displayName: 'building worker image'
           inputs:
@@ -67,14 +74,14 @@ stages:
             tags: |
               $(tags)
 
-
+        # publish kubernetes yaml files for deployment
         - task: PublishPipelineArtifact@1
           inputs:
             targetPath: '$(Pipeline.Workspace)/s/aks-specifications'
             artifact: 'manifests'
             publishLocation: 'pipeline'
 
-
+#stage to deploy the kubernetes objects on cluster
   - stage: Deploy
     displayName: Deploy App
     jobs:
@@ -89,6 +96,7 @@ stages:
                artifactName: 'manifests'
                targetPath: '$(Pipeline.Workspace)/manifests'
 
+           # creating secret to authnticate with Azure contianer registery
            - task: KubernetesManifest@0
              displayName: 'Create Secrets ACR'
              inputs:
@@ -99,6 +107,8 @@ stages:
                secretName: '$(secretName)'
                dockerRegistryEndpoint: '$(acr_serviceconnection)'
 
+
+            # creating secret to create database username and password encrypted
            - task: KubernetesManifest@0
              displayName: 'create secret DB'
              inputs:
@@ -107,8 +117,10 @@ stages:
                namespace: '$(namespaces)'
                secretType: 'generic'
                secretName: '$(secretNameDb)'
-               secretArguments: '--from-literal=username=postgres --from-literal=password="$(password)"'
+               secretArguments: '--from-literal=username=postgres --from-literal=password="$(password)"'  # password's value defined in azure pipline varibales
 
+
+           #Replacing secret name in db-deployment.yml file
            - task: replacetokens@5
              inputs:
                rootDirectory: '$(Pipeline.Workspace)/manifests'
@@ -125,6 +137,7 @@ stages:
                useLegacyPattern: false
                enableTelemetry: true
 
+         # Fetching image from ACR for vote apps and deploying it on AKS
            - task: KubernetesManifest@0
              displayName: 'Deploy vote App Kubernetes'
              inputs:
@@ -136,7 +149,8 @@ stages:
                  $(Pipeline.Workspace)/manifests/vote-service.yaml
                containers: '$(repo_url)/$(imageName_vote):$(tags)'
                imagePullSecrets: '$(secretName)'
-
+   
+          # deploying image for Redis application on AKS
            - task: KubernetesManifest@0
              displayName: 'Deploy Redis Kubernetes'
              inputs:
@@ -147,6 +161,7 @@ stages:
                  $(Pipeline.Workspace)/manifests/redis-deployment.yaml
                  $(Pipeline.Workspace)/manifests/redis-service.yaml
 
+          # deploying image for Postgres database on AKS
            - task: KubernetesManifest@0
              displayName: 'Deploy DB Kubernetes'
              inputs:
@@ -157,6 +172,7 @@ stages:
                  $(Pipeline.Workspace)/manifests/db-deployment.yaml
                  $(Pipeline.Workspace)/manifests/db-service.yaml
 
+           # Fetching image from ACR for worker apps and deploying it on AKS
            - task: KubernetesManifest@0
              displayName: 'Deploy worker Kubernetes'
              inputs:
@@ -169,6 +185,7 @@ stages:
                containers: '$(repo_url)/$(imageName_worker):$(tags)'
                imagePullSecrets: '$(secretName)'
 
+           # Fetching image from ACR for result apps and deploying it on AKS
            - task: KubernetesManifest@0
              displayName: 'Deploy result app Kubernetes'
              inputs:
