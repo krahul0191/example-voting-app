@@ -17,47 +17,48 @@ parameters:
       - prod
 
 
-  - name: build
-    displayName: Build code
-    type: boolean
-    default: false
-
-  - name: deploy
-    displayName: Deploy Code
-    type: boolean
-    default: false
-
 variables:
  - group: aks_${{ parameters.environment }}
  - name: imageName
-   value: nginx
+   value: vote
  - name: tags
    value: '$(Build.BuildId)'
  - name: replicaNo
    value: 2  
 
 stages:
-- ${{ if eq(parameters.build, true) }}:
   - stage: Build
     displayName: Build App
     jobs:
       - job: Compile
-        displayName: 'Build'
+        displayName: 'Build Vote App'
         pool:
           vmImage: 'ubuntu-latest'
         steps:
         - task: Docker@2
+          displayName: 'building vote image'
           inputs:
             containerRegistry: 'acr'
             repository: '$(imageName)'
             command: 'buildAndPush'
-            Dockerfile: '$(Build.SourcesDirectory)/docker-project/Dockerfile'
+            Dockerfile: '$(Build.SourcesDirectory)/vote/Dockerfile'
             tags: |
               $(tags)
-#              latest
+              latest
+
+        - task: Docker@2
+          displayName: 'building result image'
+          inputs:
+            containerRegistry: 'acr'
+            repository: '$(imageName)'
+            command: 'buildAndPush'
+            Dockerfile: '$(Build.SourcesDirectory)/result/Dockerfile'
+            tags: |
+              $(tags)
+              latest
         
         - task: PublishPipelineArtifact@1
           inputs:
-            targetPath: '$(Pipeline.Workspace)/s/docker-project'
+            targetPath: '$(Pipeline.Workspace)/s/k8s-specifications'
             artifact: 'manifests'
             publishLocation: 'pipeline'
