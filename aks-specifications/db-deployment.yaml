@@ -26,9 +26,15 @@ spec:
         - name: PGDATA
           value: /var/lib/postgresql/data/pgdata
         - name: POSTGRES_USER
-          value: postgres
+          valueFrom:
+            secretKeyRef:
+              name: #{secretNameDb}#
+              key: username
         - name: POSTGRES_PASSWORD
-          value: postgres
+          valueFrom:
+            secretKeyRef:
+              name: #{secretNameDb}#
+              key: password
         ports:
         - containerPort: 5432
           name: db
