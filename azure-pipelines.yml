@@ -111,7 +111,7 @@ stages:
            - task: replacetokens@5
              inputs:
                rootDirectory: '$(Pipeline.Workspace)/manifests'
-               targetFiles: '**/*.yml'
+               targetFiles: 'db-deployment.yaml'
                encoding: 'auto'
                tokenPattern: 'custom'
                tokenPrefix: '#{'
