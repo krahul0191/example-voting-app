@@ -20,7 +20,7 @@ parameters:
 variables:
   imageName_vote: vote
   imageName_result: result
-  tags: '$(Build.BuildId)'
+  tags: 'latest'
   replicaNo: 2
   aks_serviceconnection: ''
   namespaces: ''
@@ -45,7 +45,6 @@ stages:
             Dockerfile: '$(Build.SourcesDirectory)/vote/Dockerfile'
             tags: |
               $(tags)
-              latest
 
         - task: Docker@2
           displayName: 'building result image'
@@ -56,7 +55,6 @@ stages:
             Dockerfile: '$(Build.SourcesDirectory)/result/Dockerfile'
             tags: |
               $(tags)
-              latest
         
         - task: PublishPipelineArtifact@1
           inputs:
