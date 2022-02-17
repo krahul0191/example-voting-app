@@ -34,7 +34,7 @@ stages:
       - job: Compile
         displayName: 'Build Vote App'
         pool:
-          vmImage: 'ubuntu-latest'
+          vmImage: 'windows-latest'
         steps:
         - task: Docker@2
           displayName: 'building vote image'
