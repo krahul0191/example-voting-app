@@ -22,6 +22,7 @@ variables:
   imageName_worker: worker
   tags: 'latest'
   aks_serviceconnection: 'example_aks'
+  acr_serviceconnection: 'acr'
   namespaces: 'vote'
   repo_url: 'akacrdemo.azurecr.io'
   secretName: 'acrsecret'
@@ -39,7 +40,7 @@ stages:
         - task: Docker@2
           displayName: 'building vote image'
           inputs:
-            containerRegistry: 'acr'
+            containerRegistry: '$(acr_serviceconnection)'
             repository: '$(imageName_vote)'
             command: 'buildAndPush'
             Dockerfile: '$(Build.SourcesDirectory)/vote/Dockerfile'
@@ -49,7 +50,7 @@ stages:
         - task: Docker@2
           displayName: 'building result image'
           inputs:
-            containerRegistry: 'acr'
+            containerRegistry: '$(acr_serviceconnection)'
             repository: '$(imageName_result)'
             command: 'buildAndPush'
             Dockerfile: '$(Build.SourcesDirectory)/result/Dockerfile'
@@ -59,7 +60,7 @@ stages:
         - task: Docker@2
           displayName: 'building worker image'
           inputs:
-            containerRegistry: 'acr'
+            containerRegistry: '$(acr_serviceconnection)'
             repository: '$(imageName_worker)'
             command: 'buildAndPush'
             Dockerfile: '$(Build.SourcesDirectory)/worker/Dockerfile'
@@ -96,7 +97,7 @@ stages:
                namespace: '$(namespaces)'
                secretType: 'dockerRegistry'
                secretName: '$(secretName)'
-               dockerRegistryEndpoint: 'acr'
+               dockerRegistryEndpoint: '$(acr_serviceconnection)'
 
            - task: KubernetesManifest@0
              displayName: 'create secret DB'
