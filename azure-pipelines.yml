@@ -18,13 +18,14 @@ parameters:
 
 
 variables:
- - group: aks_${{ parameters.environment }}
- - name: imageName
-   value: vote
- - name: tags
-   value: '$(Build.BuildId)'
- - name: replicaNo
-   value: 2  
+  imageName_vote: vote
+  imageName_result: result
+  tags: '$(Build.BuildId)'
+  replicaNo: 2
+  aks_serviceconnection: ''
+  namespaces: ''
+  repo_url: 'akacrdemo.azurecr.io'
+  secretName: 'acrsecret'
 
 stages:
   - stage: Build
@@ -39,7 +40,7 @@ stages:
           displayName: 'building vote image'
           inputs:
             containerRegistry: 'acr'
-            repository: '$(imageName)'
+            repository: '$(imageName_vote)'
             command: 'buildAndPush'
             Dockerfile: '$(Build.SourcesDirectory)/vote/Dockerfile'
             tags: |
@@ -50,7 +51,7 @@ stages:
           displayName: 'building result image'
           inputs:
             containerRegistry: 'acr'
-            repository: '$(imageName)'
+            repository: '$(imageName_result)'
             command: 'buildAndPush'
             Dockerfile: '$(Build.SourcesDirectory)/result/Dockerfile'
             tags: |
