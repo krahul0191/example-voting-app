@@ -24,7 +24,7 @@ variables:
   aks_serviceconnection: 'example_aks'
   acr_serviceconnection: 'acr'
   namespaces: 'vote'
-  repo_url: 'akacrdemo.azurecr.io'
+  repo_url: '$(repo_url)'
   secretName: 'acrsecret'
   secretNameDb: 'dbsecret'
 
