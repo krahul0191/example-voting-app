@@ -23,7 +23,7 @@ variables:
   tags: 'latest'
   replicaNo: 1
   aks_serviceconnection: 'example_aks'
-  namespace: 'vote'
+  namespaces: 'vote'
   repo_url: 'akacrdemo.azurecr.io'
   secretName: 'acrsecret'
   secretNameDb: 'dbsecret'
