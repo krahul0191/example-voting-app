@@ -20,6 +20,7 @@ parameters:
 variables:
   imageName_vote: vote
   imageName_result: result
+  imageName_worker: worker
   tags: 'latest'
   replicaNo: 2
   aks_serviceconnection: ''
@@ -53,6 +54,16 @@ stages:
             repository: '$(imageName_result)'
             command: 'buildAndPush'
             Dockerfile: '$(Build.SourcesDirectory)/result/Dockerfile'
+            tags: |
+              $(tags)
+
+        - task: Docker@2
+          displayName: 'building worker image'
+          inputs:
+            containerRegistry: 'acr'
+            repository: '$(imageName_worker)'
+            command: 'buildAndPush'
+            Dockerfile: '$(Build.SourcesDirectory)/worker/Dockerfile'
             tags: |
               $(tags)
         
