@@ -29,12 +29,19 @@ $ kubectl create namespace vote
 
 Create service connections for Kubernetes (AKS) and private Registry (ACR) and update the name of those connections variables aks_serviceconnection, acr_serviceconnection in 
 azure-pipelines.yml file:
+
+For database password encryption a secret is created during the execution of azure devops pipeline.
+![image](https://user-images.githubusercontent.com/99867275/154626216-b3def3e3-8386-4168-a923-7c811d638775.png)
+
+For Autoscaling of the deployed pods HorizontalPodAutoscaler kubernetes object also deployed along with deployment.
+![image](https://user-images.githubusercontent.com/99867275/154626451-660ae336-10e3-4390-8f07-9c1888f997a4.png)
+
 ```
 Create a new pipeline in the azure devops using the azure-pipelines.yml file and run it on desired environment.
 
 ```
 
-The vote interface is then available on Loadbalancer vote kubernetes service on port 5000 in the cluster, the result one is available on LoadBalancer kubernetes result service port 5001.
+The vote interface is then available on Loadbalancer vote kubernetes service on port 5000 in the cluster, the result one is available on LoadBalancer kubernetes result service on port 5001.
 
 ![image](https://user-images.githubusercontent.com/99867275/154625777-5360287f-b321-4eb7-8dd9-1236b9bf72db.png)
 
