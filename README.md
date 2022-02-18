@@ -20,6 +20,7 @@ Run the app in Kubernetes
 -------------------------
 
 The folder aks-specifications contains the yaml specifications of the Voting App's services.
+The azure-pipelines.yml file is available to create a CI-CD process for build and deployment of App on kubernetes cluster.
 
 First create the vote namespace
 
