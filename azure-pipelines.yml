@@ -170,7 +170,6 @@ stages:
                namespace: '$(namespaces)'
                manifests: |
                  $(Pipeline.Workspace)/manifests/db-deployment.yaml
-                 $(Pipeline.Workspace)/manifests/autoscale-db-deployment.yaml
                  $(Pipeline.Workspace)/manifests/db-service.yaml
 
            # Fetching image from ACR for worker apps and deploying it on AKS
