@@ -3,7 +3,7 @@
 # Add steps that build, run tests, deploy scan, and more:
 # https://aka.ms/yaml
 trigger:
-- none
+- main
 
 # defined parameters to select environments
 parameters:
