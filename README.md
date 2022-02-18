@@ -31,10 +31,15 @@ $ kubectl create namespace vote
 Create service connections for Kubernetes (AKS) and private Registry (ACR) and update the name of those connections variables aks_serviceconnection, acr_serviceconnection in 
 azure-pipelines.yml file:
 
+![image](https://user-images.githubusercontent.com/99867275/154627672-38b5ff30-73b6-4086-8dc3-a783e4951f1d.png)
+
+
 For database password encryption a secret is created during the execution of azure devops pipeline.
+
 ![image](https://user-images.githubusercontent.com/99867275/154626216-b3def3e3-8386-4168-a923-7c811d638775.png)
 
 For Autoscaling of the deployed pods HorizontalPodAutoscaler kubernetes object also deployed along with deployment.
+
 ![image](https://user-images.githubusercontent.com/99867275/154626451-660ae336-10e3-4390-8f07-9c1888f997a4.png)
 
 ```
