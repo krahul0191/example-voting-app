@@ -27,22 +27,17 @@ First create the vote namespace
 $ kubectl create namespace vote
 ```
 
-Create service connections for Kubernetes (AKS) and for private Registry (ACR) and update the name of those connections variables aks_serviceconnection, acr_serviceconnection in 
+Create service connections for Kubernetes (AKS) and private Registry (ACR) and update the name of those connections variables aks_serviceconnection, acr_serviceconnection in 
 azure-pipelines.yml file:
 ```
-$ kubectl create -f k8s-specifications/
-deployment "db" created
-service "db" created
-deployment "redis" created
-service "redis" created
-deployment "result" created
-service "result" created
-deployment "vote" created
-service "vote" created
-deployment "worker" created
+Create a new pipeline in the azure devops using the azure-pipelines.yml file and run it on desired environment.
+
 ```
 
-The vote interface is then available on port 31000 on each host of the cluster, the result one is available on port 31001.
+The vote interface is then available on Loadbalancer vote kubernetes service on port 5000 in the cluster, the result one is available on LoadBalancer kubernetes result service port 5001.
+
+![image](https://user-images.githubusercontent.com/99867275/154625777-5360287f-b321-4eb7-8dd9-1236b9bf72db.png)
+
 
 Architecture
 -----
