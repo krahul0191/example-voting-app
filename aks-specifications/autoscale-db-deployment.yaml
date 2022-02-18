@@ -10,4 +10,4 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: db
-  targetCPUUtilizationPercentage: 50 # target CPU utilization
+  targetCPUUtilizationPercentage: 20 # target CPU utilization
