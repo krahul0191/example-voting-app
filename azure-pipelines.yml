@@ -146,7 +146,6 @@ stages:
                namespace: '$(namespaces)'
                manifests: |
                  $(Pipeline.Workspace)/manifests/vote-deployment.yaml
-                 $(Pipeline.Workspace)/manifests/autoscale-vote-deployment.yaml
                  $(Pipeline.Workspace)/manifests/vote-service.yaml
                containers: '$(repo_url)/$(imageName_vote):$(tags)'
                imagePullSecrets: '$(secretName)'
@@ -197,7 +196,6 @@ stages:
                namespace: '$(namespaces)'
                manifests: |
                  $(Pipeline.Workspace)/manifests/result-deployment.yaml
-                 $(Pipeline.Workspace)/manifests/autoscale-result-deployment.yaml
                  $(Pipeline.Workspace)/manifests/result-service.yaml
                containers: '$(repo_url)/$(imageName_result):$(tags)'
                imagePullSecrets: '$(secretName)'
