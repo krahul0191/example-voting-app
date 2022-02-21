@@ -37,6 +37,7 @@ Steps to provision the Infrastructure (AKS, ACR)
 3. change the directory to the Infra_provision folder and run mentioned commands to provision the Infrastructure.
  ```
  Terraform init
+ Terraform plan
  Terraform apply --auto-approve
 ```
 Create namespace on azure kubernetes cluster
