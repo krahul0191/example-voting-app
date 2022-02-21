@@ -32,17 +32,17 @@ parameters:
   - name: infra
     displayName: Infra Provision
     type: boolean
-    default: false
+    default: true
 
   - name: build
     displayName: Build App
     type: boolean
-    default: false
+    default: true
 
   - name: deploy
     displayName: Deploy App
     type: boolean
-    default: false
+    default: true
 
 
 # Defined variables aks_serviceconnection, acr_serviceconnection, repo_url are must to update for new configuration
