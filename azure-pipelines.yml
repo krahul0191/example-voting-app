@@ -34,10 +34,6 @@ parameters:
     displayName: Azure Service principal
     default: "DemoSpn"
 
-  # - name: client_id
-  #   displayName: Azure Cleint ID
-  #   default: client_id
-
   - name: acr_serviceconnection
     displayName: ACR SPN
     default: acr
