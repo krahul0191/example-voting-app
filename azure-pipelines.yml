@@ -63,7 +63,7 @@ stages:
 
 - ${{ if eq(parameters.infra, true) }}:
   - stage: Infra
-    displayName: Build App
+    displayName: Infra provisioning
     jobs:
       - job: Compile
         displayName: 'Build Apps'
