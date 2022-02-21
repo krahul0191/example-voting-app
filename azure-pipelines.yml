@@ -52,11 +52,6 @@ parameters:
     type: boolean
     default: false
 
-  - name: scan
-    displayName: Scan Project
-    type: boolean
-    default: false
-
   - name: deploy
     displayName: Deploy AKS Cluster
     type: boolean
@@ -186,50 +181,6 @@ stages:
             targetPath: '$(Pipeline.Workspace)/s/azure_kubernetes'
             artifact: 'manifests'
             publishLocation: 'pipeline'
-
-- ${{ if eq(parameters.scan, true) }}:
-  - stage: scan_project
-    displayName: sonarqube
-    dependsOn: []
-    jobs:
-      - job: scan
-        displayName: sonarqube
-        pool:
-          vmImage: 'ubuntu-latest'
-        steps:
-
-        #Building the vote docker image and pushing it to ACR  
-         - task: SonarCloudPrepare@1
-           displayName: SonarCloud Prepare
-           inputs:
-             SonarCloud: 'sonarcloud-github'
-             organization: 'rahulkumar0191-github'
-             scannerMode: 'MSBuild'
-             projectKey: 'vote_app'
-             projectName: 'vote_app'
-
-         - task: DotNetCoreCLI@2
-           displayName: 'dotnet restore'
-           inputs:
-             command: 'restore'
-             feedsToUse: 'select'
-             projects: 'ExampleVotingApp.sln'
-
-         - task: DotNetCoreCLI@2
-           displayName: 'dotnet build'
-           inputs:
-             command: 'build'
-             arguments: '--configuration Release'
-             projects: 'ExampleVotingApp.sln'
-
-
-         - task: SonarCloudAnalyze@1
-           displayName: Sonar Analysis
-
-         - task: SonarCloudPublish@1
-           displayName: Sonar Quality Gates
-           inputs:
-              pollingTimeoutSec: '300'
 
 #stage to deploy the kubernetes objects on cluster
 - ${{ if eq(parameters.deploy, true) }}:
