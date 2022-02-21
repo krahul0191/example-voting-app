@@ -53,6 +53,20 @@ After the successfull execution on the azure devops pipelinet the vote interface
 
 ![image](https://user-images.githubusercontent.com/99867275/154890689-ccd804c5-9017-4674-b6bd-15bd4f25e3e2.png)
 
+deployment files in azure_kubernetes
+-----
+1. yaml file with autoscale prefix are created for autosclaing of the pods.
+2. db-deployment.yaml file is created to deploy the database pod and kubernetes persistent volume.
+3. db-service.yaml file is created to create the cluster-ip service for database in cluster.
+4. redis-deployment.yaml file is created to redis pod in cluster
+5. redis-service.yaml file is created to deploy cluster-ip service in cluster
+6. result-deployment.yaml file is used to deploy the result pods in cluster
+7. result-service.yaml file is used to create the LoadBalancer service to expose the result app outside of cluster.
+8. vote-deployment.yaml file is used to deploy the vote app.
+9. vote-service.yaml file is used to create the LoadBalancer service to expose the vote app outside of cluster.
+10. worker-deployment.yaml file is used to deploy the worker api.
+11. worker-service.yaml file is used to created cluster ip to connect worker api with database.
+
 Architecture
 -----
 
@@ -63,6 +77,7 @@ Architecture
 * A [.NET Core](/worker/src/Worker), [Java](/worker/src/main) or [.NET Core 2.1](/worker/dotnet) worker which consumes votes and stores them in…
 * A [Postgres](https://hub.docker.com/_/postgres/) or [TiDB](https://hub.docker.com/r/dockersamples/tidb/tags/) database backed by a Docker volume
 * A [Node.js](/result) or [ASP.NET Core SignalR](/result/dotnet) webapp which shows the results of the voting in real time
+
 
 
 Notes
