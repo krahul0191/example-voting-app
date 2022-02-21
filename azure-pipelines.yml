@@ -109,11 +109,11 @@ stages:
         
         - task: TerraformTaskV2@2
           inputs:
-           provider: 'azurerm'
-           command: 'apply'
-           backendServiceArm: 'Pay-As-You-Go(e566f2e9-6347-4b3e-9ba9-cb7e24363cb5)'
-           workingDirectory: 'Infra_provision'
-           commandOptions: '-auto-approve'
+            provider: 'azurerm'
+            command: 'apply'
+            workingDirectory: 'Infra_provision'
+            commandOptions: '-auto-approve'
+            environmentServiceNameAzureRM: 'Pay-As-You-Go(e566f2e9-6347-4b3e-9ba9-cb7e24363cb5)'
           displayName: 'Infra Provisining' 
 
 - ${{ if eq(parameters.build, true) }}:
