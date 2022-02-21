@@ -22,7 +22,7 @@ Prerequisites
 1. Azure Kubernetes cluster
 2. Azure Container Registry
 3. Azure DevOps
-4. Terraform Utility 
+
 -------------------------
 Build and Deploy Automation code
 -------------------------
@@ -30,27 +30,15 @@ Build and Deploy Automation code
 2. The folder azure_kubernetes contains the yaml specifications of the Voting App's services.
 3. The azure-pipelines.yml file to create a CI-CD process for build and deployment of App on kubernetes cluster.
 
-Steps to provision the Infrastructure (AKS, ACR)
+Steps to provision Infra, build and deploy the app
 -------------------------
-1. Clone the github repo.
-2. provide azure service principal account client_id, client_secret, tenant_id and subscription_id in variables.tf file in Infra_provision folder to authenticate the terraform with azure portal.
-3. change the directory to the Infra_provision folder and run mentioned commands to provision the Infrastructure.
- ```
- Terraform init
- Terraform plan
- Terraform apply --auto-approve
-```
-Create namespace on azure kubernetes cluster
--------------------------
-```
-kubectl create namespace vote
-```
-Create service connections and update varaibles in azure-pipelines.yml
--------------------------
-Create service connections for Kubernetes (AKS) and private Registry (ACR) in Azure DevOps and update the name of those connections variables aks_serviceconnection, acr_serviceconnection in azure-pipelines.yml file:
+1. create a new project in azure devops
+2. import the github repo in the newly created project in azure devops
+3. create azure pipeline with the help of azure-pipeline.yml file.
+4. provide the value of the parameters at runtime and run the pipeline selecting infra provisoning stage to provison the Infrastructure.
+5. create and update the variables aks_serviceconnection, acr_serviceconnection value in azure-pipeline.yml file
 
 ![image](https://user-images.githubusercontent.com/99867275/154627672-38b5ff30-73b6-4086-8dc3-a783e4951f1d.png)
-
 
 For database password encryption a secret is created during the execution of azure devops pipeline.
 
@@ -60,12 +48,9 @@ For Autoscaling of the deployed pods HorizontalPodAutoscaler kubernetes object a
 
 ![image](https://user-images.githubusercontent.com/99867275/154626451-660ae336-10e3-4390-8f07-9c1888f997a4.png)
 
+6. Run the azure devops pipeline to build and deploy app on kubernetes cluster
 
-Create Azure DevOps pipeline
--------------------------
-Use azure-pipelines.yml file to create a azure devops CI-CD pipeline and run it on desired environment.
-
-After the successfull execution on the azure devops pipelinet he vote interface is available on Loadbalancer vote kubernetes service on port 5000 in the cluster, the result one is available on LoadBalancer kubernetes result service on port 5001.
+After the successfull execution on the azure devops pipelinet the vote interface is available on Loadbalancer vote kubernetes service on port 5000 in the cluster, the result one is available on LoadBalancer kubernetes result service on port 5001.
 
 ![image](https://user-images.githubusercontent.com/99867275/154890689-ccd804c5-9017-4674-b6bd-15bd4f25e3e2.png)
 
