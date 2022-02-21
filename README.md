@@ -52,6 +52,10 @@ After the successfull execution on the azure devops pipelinet the vote interface
 
 ![image](https://user-images.githubusercontent.com/99867275/154890689-ccd804c5-9017-4674-b6bd-15bd4f25e3e2.png)
 
+Sonarcloud Analysis for Voting Projct.
+-----
+Sonarcloud project link: https://sonarcloud.io/summary/overall?id=vote_app
+
 kubernetes yml files in azure_kubernetes folder
 -----
 1. yaml file with autoscale prefix are created for autosclaing of the pods.
