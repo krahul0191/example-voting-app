@@ -1,10 +1,5 @@
 # We strongly recommend using the required_providers block to set the
 # Azure Provider source and version being used
-resource "azurerm_resource_group" "resource_group" {
-  name     = var.rg_name
-  location = var.location
-  
-}
 
 #creating Azure Kubernetes cluster...
 resource "azurerm_kubernetes_cluster" "kubernetes_cluster" {
