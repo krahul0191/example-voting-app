@@ -19,7 +19,7 @@ parameters:
 
   - name: repo_url
     displayName: ACR Repo URl 
-    default: axrdemo.azurecr.io'
+    default: axrdemo.azurecr.io
 
 # Defined variables aks_serviceconnection, acr_serviceconnection, repo_url are must to update for new configuration
 variables:
