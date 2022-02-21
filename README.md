@@ -22,8 +22,8 @@ Prerequisites
 1. Azure Kubernetes cluster
 2. Azure Container Registry
 3. Azure DevOps
-4. Azure service connections (aks_serviceconnection, acr_serviceconnection)
-5. Azure Service Principal Account (DemoSpn)
+4. Azure service connections for Azure kubernetes Services and Azure Contianer Registry 
+5. Azure Service Principal Account to authenticate the terraform with Azure.
 6. Azure Storage Account, Azure Storage container for terraform backend configuration
 
 -------------------------
