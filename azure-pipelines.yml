@@ -21,6 +21,10 @@ parameters:
     displayName: Azure Container Repositry URl 
     default: axrdemo.azurecr.io
 
+  - name: azure_rg
+    displayName: Azure resource group
+    default: terraform
+
   - name: azure_storage
     displayName: Azure Storage Account Name
     default: azurestorage
@@ -44,6 +48,7 @@ parameters:
     type: boolean
     default: false
 
+
 # Defined variables aks_serviceconnection, acr_serviceconnection, repo_url are must to update for new configuration
 variables:
   imageName_vote: vote
@@ -59,6 +64,39 @@ variables:
 
 # Stage to build/compile the code
 stages:
+
+- ${{ if eq(parameters.infra, true) }}:
+  - stage: Build
+    displayName: Build App
+    jobs:
+      - job: Compile
+        displayName: 'Build Apps'
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+        - task: TerraformInstaller@0
+          inputs:
+            terraformVersion: 'latest'
+
+        - task: TerraformTaskV2@2
+          inputs:
+           provider: 'azurerm'
+           command: 'init'
+           workingDirectory: 'Infra_provision'
+           backendAzureRmStorageAccountName: '${{ parameters.azure_storage }}'
+           backendAzureRmContainerName: '${{ parameters.azure_storage_container }}'
+           backendAzureRmKey: 'tfstate'
+          displayName: 'Terraform Backend' 
+
+        - task: TerraformTaskV2@2
+          inputs:
+           provider: 'azurerm'
+           command: 'apply'
+           workingDirectory: 'Infra_provision'
+           commandOptions: '-auto-approve'
+          displayName: 'Infra Provisining' 
+
+- ${{ if eq(parameters.build, true) }}:
   - stage: Build
     displayName: Build App
     jobs:
@@ -109,6 +147,7 @@ stages:
             publishLocation: 'pipeline'
 
 #stage to deploy the kubernetes objects on cluster
+- ${{ if eq(parameters.deploy, true) }}:
   - stage: Deploy
     displayName: Deploy App
     jobs:
