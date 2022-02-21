@@ -3,7 +3,7 @@
 # Add steps that build, run tests, deploy scan, and more:
 # https://aka.ms/yaml
 trigger:
-- main
+- none
 
 # defined parameters to select environments
 parameters:
@@ -26,6 +26,7 @@ variables:
   aks_serviceconnection: 'example_aks'
   acr_serviceconnection: 'acr'
   namespaces: 'vote'
+  password: 'postgres'
   repo_url: 'axrdemo.azurecr.io'  # Azure contianer Registry Url
   secretName: 'acrsecret'       
   secretNameDb: 'dbsecret' 
@@ -77,7 +78,7 @@ stages:
         # publish kubernetes yaml files for deployment
         - task: PublishPipelineArtifact@1
           inputs:
-            targetPath: '$(Pipeline.Workspace)/s/aks-specifications'
+            targetPath: '$(Pipeline.Workspace)/s/azure_kubernetes'
             artifact: 'manifests'
             publishLocation: 'pipeline'
 
