@@ -147,6 +147,7 @@ stages:
 - ${{ if eq(parameters.deploy, true) }}:
   - stage: Deploy
     displayName: Deploy App
+    dependsOn: []
     jobs:
     - job: deploy
       displayName:  deploy-${{parameters.environment}}
