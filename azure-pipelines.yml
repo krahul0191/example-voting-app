@@ -29,6 +29,22 @@ parameters:
     displayName: Azure Storage Container
     default: terraform
 
+  - name: subscription_id
+    displayName: Azure subscription ID
+    default: terraform
+
+  - name: client_id
+    displayName: Azure Cleint ID
+    default: terraform
+
+  - name: client_secret
+    displayName: Azure Client Secret
+    default: terraform
+
+  - name: tenant_id
+    displayName: Azure tenant ID
+    default: terraform
+
   - name: infra
     displayName: Infra Provision
     type: boolean
