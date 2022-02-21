@@ -2,10 +2,10 @@
 # Azure Provider source and version being used
 
 #creating Azure Kubernetes cluster...
-resource "azurerm_kubernetes_cluster" "kubernetes_cluster" {
+resource "azurerm_kubernetes_cluster" "k8s_cluster" {
   name                = var.aks_name
-  location            = azurerm_resource_group.resource_group.location
-  resource_group_name = azurerm_resource_group.resource_group.name
+  location            = var.location
+  resource_group_name = var.rg_name
   dns_prefix          = "kubes"
 
   default_node_pool {
@@ -24,7 +24,7 @@ resource "azurerm_kubernetes_cluster" "kubernetes_cluster" {
 }
 
 output "kube_config" {
-  value = azurerm_kubernetes_cluster.kubernetes_cluster.kube_config_raw
+  value = azurerm_kubernetes_cluster.k8s_cluster.kube_config_raw
   sensitive = true
 }
 

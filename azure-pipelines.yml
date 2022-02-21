@@ -9,13 +9,10 @@ trigger:
 parameters:
   - name: environment
     displayName: Environment
-    default: dev
-    type: string
     values:
       - dev
       - test
-      - stage
-      - prod
+
 
   - name: repo_url
     displayName: Azure Container Repositry URl 
@@ -33,40 +30,36 @@ parameters:
     displayName: Azure Storage Container
     default: terraform
 
-  - name: subscription_id
-    displayName: Azure subscription ID
-    default: subscription_id
+  - name: azurespn
+    displayName: Azure Service principal
+    default: "DemoSpn"
 
-  - name: client_id
-    displayName: Azure Cleint ID
-    default: client_id
+  # - name: client_id
+  #   displayName: Azure Cleint ID
+  #   default: client_id
 
-  - name: client_secret
-    displayName: Azure Client Secret
-    default: client_secret
+  - name: acr_serviceconnection
+    displayName: ACR SPN
+    default: acr
 
-  - name: tenant_id
-    displayName: Azure tenant ID
-    default: tenant_id
-
-  - name: terraform_authentication
-    displayName: Azure connection
-    default: Pay-As-You-Go(e566f2e9-6347-4b3e-9ba9-cb7e24363cb5)
+  - name: aks_serviceconnection
+    displayName: AKS SPN
+    default: aks
 
   - name: infra
     displayName: Infra Provision
     type: boolean
-    default: true
+    default: false
 
   - name: build
-    displayName: Build App
+    displayName: Build Docker Image
     type: boolean
-    default: true
+    default: false
 
   - name: deploy
-    displayName: Deploy App
+    displayName: Deploy AKS Cluster
     type: boolean
-    default: true
+    default: false
 
 
 # Defined variables aks_serviceconnection, acr_serviceconnection, repo_url are must to update for new configuration
@@ -74,8 +67,8 @@ variables:
   imageName_vote: vote
   imageName_result: result
   imageName_worker: worker
-  aks_serviceconnection: 'example_aks'
-  acr_serviceconnection: 'acr'
+  aks_serviceconnection: ${{ parameters.aks_serviceconnection }}
+  acr_serviceconnection: ${{ parameters.acr_serviceconnection }}
   namespaces: 'vote'
   password: 'postgres'
   secretName: 'acrsecret'
@@ -84,49 +77,71 @@ variables:
 
 # Stage to build/compile the code
 stages:
-
 - ${{ if eq(parameters.infra, true) }}:
   - stage: Infra
     displayName: Infra provisioning
     jobs:
-      - job: infra
-        displayName: 'Infra provision'
-        pool:
-          vmImage: 'ubuntu-latest'
-        steps:
-        - task: TerraformInstaller@0
+    - job: Compile
+      displayName: 'Infra_${{ parameters.environment }} '
+      pool:
+                vmImage: 'ubuntu-latest'
+      steps:
+        - task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@0
+          displayName: 'Install Terraform 0.13.0'
           inputs:
-            terraformVersion: 'latest'
+            terraformVersion: 0.13.0
 
-        - task: TerraformTaskV2@2
-          inputs:
-           provider: 'azurerm'
-           command: 'init'
-           workingDirectory: 'Infra_provision'
-           backendServiceArm: '${{ parameters.terraform_authentication }}'
-           backendAzureRmStorageAccountName: '${{ parameters.azure_storage }}'
-           backendAzureRmContainerName: '${{ parameters.azure_storage_container }}'
-           backendAzureRmResourceGroupName: '${{ parameters.azure_rg }}'
-           backendAzureRmKey: 'tfstate'
-          displayName: 'Terraform Backend'
+        - powershell: |
+              Set-Content -Path backend.tf -Value @"
+              terraform{
+                backend "azurerm"{
+                }
+              }
+              "@
+          workingDirectory: "$(System.DefaultWorkingDirectory)/Infra_provision"
+          displayName: "Configure tf backend"
 
-        
-        - task: TerraformTaskV2@2
+        - task: TerraformTaskV1@0
+          displayName: "Terraform Init"
           inputs:
-            provider: 'azurerm'
-            command: 'apply'
-            workingDirectory: 'Infra_provision'
-            commandOptions: '-auto-approve'
-            environmentServiceNameAzureRM: '${{ parameters.terraform_authentication }}'
-          displayName: 'Infra Provisining' 
+            provider: "azurerm"
+            command: "init"
+            workingDirectory: "$(System.DefaultWorkingDirectory)/Infra_provision"
+            backendServiceArm: ${{ parameters.azurespn }}
+            backendAzureRmResourceGroupName: ${{ parameters.azure_rg }}
+            backendAzureRmStorageAccountName: ${{ parameters.azure_storage }}
+            backendAzureRmContainerName: ${{ parameters.azure_storage_container }}
+            backendAzureRmKey: "terraform_${{ parameters.environment }}.tfstate"
+
+        - task: TerraformTaskV1@0
+          displayName: "Terraform Plan"
+          # condition: and(succeeded(), eq('${{ parameters.enabled }}', true))
+          inputs:
+            provider: "azurerm"
+            command: "plan"
+            workingDirectory: "$(System.DefaultWorkingDirectory)/Infra_provision"
+            commandOptions: '-out=tfplan -lock=false'
+            environmentServiceNameAzureRM: ${{ parameters.azurespn }}
+
+        - task: TerraformTaskV1@0
+          name: terraformApply
+          # enabled: ${{ parameters.confirmApply }}
+          # condition: and(succeeded(), eq('${{ parameters.enabled }}', true))
+          inputs:
+            provider: "azurerm"
+            command: "apply"
+            workingDirectory: "$(System.DefaultWorkingDirectory)/Infra_provision"
+            commandOptions: "-lock=false tfplan"
+            environmentServiceNameAzureRM: ${{ parameters.azurespn }}
+          continueOnError: true 
 
 - ${{ if eq(parameters.build, true) }}:
-  - stage: Build
-    displayName: Build App
-    dependsOn: []
+  - stage: BuildDockerImage
+    displayName: BuildDockerImage
+    dependsOn: Infra
     jobs:
       - job: Compile
-        displayName: 'Build Apps'
+        displayName: BuildDockerImage
         pool:
           vmImage: 'ubuntu-latest'
         steps:
@@ -173,9 +188,9 @@ stages:
 
 #stage to deploy the kubernetes objects on cluster
 - ${{ if eq(parameters.deploy, true) }}:
-  - stage: Deploy
-    displayName: Deploy App
-    dependsOn: []
+  - stage: Deployk8scluster
+    displayName: Deploy AKS cluster
+    dependsOn: BuildDockerImage
     jobs:
     - job: deploy
       displayName:  deploy-${{parameters.environment}}
