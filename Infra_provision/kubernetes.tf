@@ -17,14 +17,14 @@ provider "azurerm" {
  }
 
 resource "azurerm_resource_group" "resource_group" {
-  name     = "aks_rg"
-  location = "West US 2"
+  name     = var.rg_name
+  location = var.location
   
 }
 
 #creating Azure Kubernetes cluster...
 resource "azurerm_kubernetes_cluster" "kubernetes_cluster" {
-  name                = "kubernetes_cluster"
+  name                = var.aks_name
   location            = azurerm_resource_group.resource_group.location
   resource_group_name = azurerm_resource_group.resource_group.name
   dns_prefix          = "kubes"
@@ -51,7 +51,7 @@ output "kube_config" {
 
 # Creating Azure Container Registry...
 resource "azurerm_container_registry" "acr" {
-  name                = "axrdemo"
+  name                = var.acr_name
   resource_group_name = azurerm_resource_group.resource_group.name
   location            = azurerm_resource_group.resource_group.location
   sku                 = "basic"
