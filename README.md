@@ -53,7 +53,7 @@ After the successfull execution on the azure devops pipelinet the vote interface
 
 ![image](https://user-images.githubusercontent.com/99867275/154890689-ccd804c5-9017-4674-b6bd-15bd4f25e3e2.png)
 
-deployment files in azure_kubernetes
+kubernetes yml files in azure_kubernetes folder
 -----
 1. yaml file with autoscale prefix are created for autosclaing of the pods.
 2. db-deployment.yaml file is created to deploy the database pod and kubernetes persistent volume.
@@ -79,6 +79,9 @@ Architecture
 * A [Node.js](/result) or [ASP.NET Core SignalR](/result/dotnet) webapp which shows the results of the voting in real time
 
 
+Vagrantfile
+-----
+vagrantfile is located in Infra_provision folder.
 
 Notes
 -----
