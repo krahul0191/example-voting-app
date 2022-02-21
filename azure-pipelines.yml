@@ -95,6 +95,7 @@ stages:
 - ${{ if eq(parameters.build, true) }}:
   - stage: Build
     displayName: Build App
+    dependsOn: []
     jobs:
       - job: Compile
         displayName: 'Build Apps'
