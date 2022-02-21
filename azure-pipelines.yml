@@ -199,6 +199,15 @@ stages:
                artifactName: 'manifests'
                targetPath: '$(Pipeline.Workspace)/manifests'
 
+           - task: Kubernetes@1
+             inputs:
+               connectionType: 'Kubernetes Service Connection'
+               kubernetesServiceEndpoint: '$(aks_serviceconnection)'
+               command: 'create'
+               arguments: 'namespace $(namespaces)'
+               secretType: 'dockerRegistry'
+               containerRegistryType: 'Azure Container Registry'
+
            # creating secret to authnticate with Azure contianer registery
            - task: KubernetesManifest@0
              displayName: 'Create Secrets ACR'
@@ -209,7 +218,6 @@ stages:
                secretType: 'dockerRegistry'
                secretName: '$(secretName)'
                dockerRegistryEndpoint: '$(acr_serviceconnection)'
-
 
             # creating secret to create database username and password encrypted
            - task: KubernetesManifest@0
