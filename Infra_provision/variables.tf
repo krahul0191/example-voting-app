@@ -13,3 +13,7 @@ variable "aks_name" {
 variable "acr_name" {
   default = "axrdemo"
 }
+
+variable "location1" {
+  default = "Central US"
+}
