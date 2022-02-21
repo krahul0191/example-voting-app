@@ -31,19 +31,19 @@ parameters:
 
   - name: subscription_id
     displayName: Azure subscription ID
-    default: terraform
+    default: subscription_id
 
   - name: client_id
     displayName: Azure Cleint ID
-    default: terraform
+    default: client_id
 
   - name: client_secret
     displayName: Azure Client Secret
-    default: terraform
+    default: client_secret
 
   - name: tenant_id
     displayName: Azure tenant ID
-    default: terraform
+    default: tenant_id
 
   - name: infra
     displayName: Infra Provision
