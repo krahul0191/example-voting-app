@@ -134,7 +134,7 @@ stages:
 - ${{ if eq(parameters.build, true) }}:
   - stage: BuildDockerImage
     displayName: BuildDockerImage
-    dependsOn: Infra
+#    dependsOn: Infra
     jobs:
       - job: Compile
         displayName: BuildDockerImage
