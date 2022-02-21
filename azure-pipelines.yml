@@ -85,8 +85,8 @@ stages:
   - stage: Infra
     displayName: Infra provisioning
     jobs:
-      - job: Compile
-        displayName: 'Build Apps'
+      - job: infra
+        displayName: 'Infra provision'
         pool:
           vmImage: 'ubuntu-latest'
         steps:
