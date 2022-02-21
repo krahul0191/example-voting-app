@@ -17,6 +17,12 @@ parameters:
       - stage
       - prod
 
+  - name: repo_url
+    displayName: ACR Repo URl 
+    type: string
+    values:
+      - 'axrdemo.azurecr.io'
+
 # Defined variables aks_serviceconnection, acr_serviceconnection, repo_url are must to update for new configuration
 variables:
   imageName_vote: vote
