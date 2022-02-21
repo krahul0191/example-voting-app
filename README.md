@@ -37,8 +37,7 @@ Steps to provision Infra, build and deploy the app
 3. create azure pipeline with the help of azure-pipeline.yml file.
 4. provide the value of the parameters at runtime and run the pipeline selecting infra provisoning stage to provison the Infrastructure.
 
-![image](https://user-images.githubusercontent.com/99867275/154904418-23197be4-f406-4af8-8004-3c401f3091c5.png)
-
+![image](https://user-images.githubusercontent.com/99867275/154904643-480e2148-14d2-43b2-b7be-875763c0bfc4.png)
 
 5. create and update the variables aks_serviceconnection, acr_serviceconnection value in azure-pipeline.yml file
 
