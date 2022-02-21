@@ -1,8 +1,8 @@
    terraform {
    backend "azurerm" {
-        resource_group_name  = "provision-scripts"
-        storage_account_name = "ansiblestorage"
+        resource_group_name  = var.rg_name
+        storage_account_name = "azurestorage"
         container_name       = "terraform"
-        key                  = "tdf/template/tfstate"
+        key                  = "tfstate"
    }
 }
