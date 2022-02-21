@@ -21,10 +21,6 @@ parameters:
     displayName: Azure Container Repositry URl 
     default: axrdemo.azurecr.io
 
-  - name: azure_rg
-    displayName: Azure resource group
-    default: terraform
-
   - name: azure_storage
     displayName: Azure Storage Account Name
     default: azurestorage
