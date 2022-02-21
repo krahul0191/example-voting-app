@@ -29,6 +29,20 @@ parameters:
     displayName: Azure Storage Container
     default: terraform
 
+  - name: infra
+    displayName: Infra Provision
+    type: boolean
+    default: false
+
+  - name: build
+    displayName: Build App
+    type: boolean
+    default: false
+
+  - name: deploy
+    displayName: Deploy App
+    type: boolean
+    default: false
 
 # Defined variables aks_serviceconnection, acr_serviceconnection, repo_url are must to update for new configuration
 variables:
