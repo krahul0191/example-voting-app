@@ -50,13 +50,13 @@ variables:
   imageName_vote: vote
   imageName_result: result
   imageName_worker: worker
-  tags: 'latest'
   aks_serviceconnection: 'example_aks'
   acr_serviceconnection: 'acr'
   namespaces: 'vote'
   password: 'postgres'
-  secretName: 'acrsecret'       
-  secretNameDb: 'dbsecret' 
+  secretName: 'acrsecret'
+  secretNameDb: 'dbsecret'
+  tags: 'latest'
 
 # Stage to build/compile the code
 stages:
