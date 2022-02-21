@@ -49,6 +49,10 @@ parameters:
     displayName: Azure tenant ID
     default: tenant_id
 
+  - name: terraform_authentication
+    displayName: Azure connection
+    default: Pay-As-You-Go(e566f2e9-6347-4b3e-9ba9-cb7e24363cb5)
+
   - name: infra
     displayName: Infra Provision
     type: boolean
@@ -99,7 +103,7 @@ stages:
            provider: 'azurerm'
            command: 'init'
            workingDirectory: 'Infra_provision'
-           backendServiceArm: 'Pay-As-You-Go(e566f2e9-6347-4b3e-9ba9-cb7e24363cb5)'
+           backendServiceArm: '${{ parameters.terraform_authentication }}'
            backendAzureRmStorageAccountName: '${{ parameters.azure_storage }}'
            backendAzureRmContainerName: '${{ parameters.azure_storage_container }}'
            backendAzureRmResourceGroupName: '${{ parameters.azure_rg }}'
@@ -113,7 +117,7 @@ stages:
             command: 'apply'
             workingDirectory: 'Infra_provision'
             commandOptions: '-auto-approve'
-            environmentServiceNameAzureRM: 'Pay-As-You-Go(e566f2e9-6347-4b3e-9ba9-cb7e24363cb5)'
+            environmentServiceNameAzureRM: '${{ parameters.terraform_authentication }}'
           displayName: 'Infra Provisining' 
 
 - ${{ if eq(parameters.build, true) }}:
