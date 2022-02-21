@@ -40,11 +40,7 @@ Steps to provision Infra, build and deploy the app
 3. create azure pipeline with the help of azure-pipeline.yml file.
 4. provide the value of the parameters at runtime and run the pipeline selecting infra provisoning stage to provison the Infrastructure.
 
-![image](https://user-images.githubusercontent.com/99867275/154911105-d0d4e399-3f2b-4c3f-adca-cf868ac6757a.png)
-
-5. create and update the variables aks_serviceconnection, acr_serviceconnection value in azure-pipeline.yml file
-
-![image](https://user-images.githubusercontent.com/99867275/154904228-38c30592-4247-4d08-b0a3-68da09846c12.png)
+![image](https://user-images.githubusercontent.com/99867275/154939035-27287cb6-f4f0-48e9-86c7-c8f73ac1c25b.png)
 
 For database password encryption a secret is created during the execution of azure devops pipeline.
 
