@@ -18,8 +18,17 @@ parameters:
       - prod
 
   - name: repo_url
-    displayName: ACR Repo URl 
+    displayName: Azure Container Repositry URl 
     default: axrdemo.azurecr.io
+
+  - name: azure_storage
+    displayName: Azure Storage Account Name
+    default: azurestorage
+
+  - name: azure_storage_container
+    displayName: Azure Storage Container
+    default: terraform
+
 
 # Defined variables aks_serviceconnection, acr_serviceconnection, repo_url are must to update for new configuration
 variables:
@@ -31,7 +40,6 @@ variables:
   acr_serviceconnection: 'acr'
   namespaces: 'vote'
   password: 'postgres'
-  repo_url: 'axrdemo.azurecr.io'  # Azure contianer Registry Url
   secretName: 'acrsecret'       
   secretNameDb: 'dbsecret' 
 
@@ -152,7 +160,7 @@ stages:
                manifests: |
                  $(Pipeline.Workspace)/manifests/vote-deployment.yaml
                  $(Pipeline.Workspace)/manifests/vote-service.yaml
-               containers: '$(repo_url)/$(imageName_vote):$(tags)'
+               containers: '${{parameters.repo_url}}/$(imageName_vote):$(tags)'
                imagePullSecrets: '$(secretName)'
    
           # deploying image for Redis application on AKS
@@ -188,7 +196,7 @@ stages:
                  $(Pipeline.Workspace)/manifests/worker-deployment.yaml
                  $(Pipeline.Workspace)/manifests/autoscale-worker-deployment.yaml
                  $(Pipeline.Workspace)/manifests/worker-service.yaml
-               containers: '$(repo_url)/$(imageName_worker):$(tags)'
+               containers: '${{parameters.repo_url}}/$(imageName_worker):$(tags)'
                imagePullSecrets: '$(secretName)'
 
            # Fetching image from ACR for result apps and deploying it on AKS
@@ -201,5 +209,5 @@ stages:
                manifests: |
                  $(Pipeline.Workspace)/manifests/result-deployment.yaml
                  $(Pipeline.Workspace)/manifests/result-service.yaml
-               containers: '$(repo_url)/$(imageName_result):$(tags)'
+               containers: '${{parameters.repo_url}}/$(imageName_result):$(tags)'
                imagePullSecrets: '$(secretName)'
