@@ -65,6 +65,7 @@ Create Azure DevOps pipeline
 Use azure-pipelines.yml file to create a azure devops CI-CD pipeline and run it on desired environment.
 
 After the successfull execution on the azure devops pipelinet he vote interface is available on Loadbalancer vote kubernetes service on port 5000 in the cluster, the result one is available on LoadBalancer kubernetes result service on port 5001.
+
 ![image](https://user-images.githubusercontent.com/99867275/154890689-ccd804c5-9017-4674-b6bd-15bd4f25e3e2.png)
 
 Architecture
