@@ -200,6 +200,7 @@ stages:
                targetPath: '$(Pipeline.Workspace)/manifests'
 
            - task: Kubernetes@1
+             displayName: create namespace
              inputs:
                connectionType: 'Kubernetes Service Connection'
                kubernetesServiceEndpoint: '$(aks_serviceconnection)'
