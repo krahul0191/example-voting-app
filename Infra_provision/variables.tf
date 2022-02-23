@@ -17,3 +17,7 @@ variable "acr_name" {
 variable "location1" {
   default = "Central US"
 }
+
+variable "agent_count" {
+    default = 3
+}
