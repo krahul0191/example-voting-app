@@ -1,4 +1,4 @@
-Example Voting App
+Example Voting App for demo
 =========
 
 A simple distributed application running across Azure Kubernetes cluster.
